@@ -1,0 +1,115 @@
+﻿@model IEnumerable<PHam_Le_Gia_Dai___1811064708___lab5.Models.Course> 
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <ul class="course">
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="date">
+                    <div class="month">
+                        @item.DateTime.ToString("MM")
+                    </div>
+                    <div class="day">
+                        @item.DateTime.ToString("dd")
+                    </div>
+                </div>
+                <div class="details">
+                    <span class="lecture">
+                        @item.Name
+                        @if (ViewBag.IsLoggedIn)
+                        {
+                            if (ViewBag.FollowedIDs.Contains(item.LecturerId))
+                            {
+                                <button data-lecturer-id="@item.LecturerId" class="btn btn-success btn-sm js-toggle-follow">Following</button>
+                            }
+                            else
+                            {
+                                <button data-lecturer-id="@item.LecturerId" class="btn btn-default btn-sm js-toggle-follow">Follow</button>
+                            }
+                        }
+                    </span>
+                    <br/>
+                    <span class="category">
+                        @item.Category.Name
+                        @if (ViewBag.IsLoggedIn)
+                        {
+                            if (ViewBag.AttendedCourses.Contains(item.Name))
+                            {
+                                <button data-course-id="@item.Id" class="btn btn-info btn-sm js-toggle-attendance">Going</button>
+                            }
+                            else
+                            {
+                                <button data-course-id="@item.Id" class="btn btn-default btn-sm js-toggle-attendance">Going?</button>
+                            }
+                        }
+
+                    </span>
+                    <br/>
+
+                </div>
+            </li>
+        }
+    </ul>
+
+    @section scripts
+    {
+        <script>
+            $(document).ready(function() {
+                $(".js-toggle-attendance").click(function(e) {
+                    var button = $(e.target);
+                    $.post("/api/attendances", { id: button.attr("data-course-id") })
+                        .done(function(result) {
+                            if (result === "Canceled") {
+                                alert("Cancel course successfully!");
+                                button
+                                    .removeClass("btn-info")
+                                    .addClass("btn-default")
+                                    .text("Going?");
+                            } else {
+                                alert("Register course successfully!");
+                                button
+                                    .removeClass("btn-default")
+                                    .addClass("btn-info")
+                                    .text("Going");
+                            }
+                        }).fail(function() {
+                            alert(result.responseJSON.Message);
+                        });
+                });
+                $(".js-toggle-follow").click(function(e) {
+                    var button = $(e.target);
+                    var followee = button.attr("data-lecturer-id");
+                    $.post("/api/follow", { FolloweeId: followee })
+                        .done(function(result) {
+                            if (result === "UnFollowed") {
+                                $(".js-toggle-follow").each(function(i, obj) {
+                                    if ($(this).attr("data-lecturer-id") == followee) {
+                                        $(this).removeClass("btn-success")
+                                            .addClass("btn-default")
+                                            .text("Follow");
+                                    }
+                                });
+                            } else {
+                                $(".js-toggle-follow").each(function(i, obj) {
+                                    if ($(this).attr("data-lecturer-id") == followee) {
+                                        $(this).removeClass("btn-default")
+                                            .addClass("btn-success")
+                                            .text("Following");
+                                    }
+                                });
+
+                            }
+                            alert(result.responseJSON.Message);
+                        }).fail(function(result) {
+                            alert(result.responseJSON.Message);
+                        });
+                });
+            });
+        </script>
+    }
+
+</div>

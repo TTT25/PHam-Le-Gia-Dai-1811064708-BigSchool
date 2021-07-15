@@ -1,0 +1,68 @@
+﻿@model IEnumerable<PHam_Le_Gia_Dai___1811064708___lab5.Models.Course>
+@{
+    ViewBag.Title = "Mine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Mine</h2>
+
+<div class="row">
+    <ul class="course">
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="date">
+                    <div class="month">
+                        @item.DateTime.ToString("MM")
+                    </div>
+                    <div class="day">
+                        @item.DateTime.ToString("dd")
+                    </div>
+                </div>
+                <div class="details">
+                    <span class="lecture">
+                        Name : @item.Name
+                    </span>
+                    <br/>
+                    <span class="lecture">
+                        Lecturer : @item.ApplicationUser.Name
+                    </span>
+                    <br/>
+                    <span class="category">
+                        Category : @item.Category.Name
+                    </span>
+                </div>
+                <div class="action" style="margin-top: 8px">
+                    <button class="btn">
+                        <a href="@Url.Action("Edit", "Course")/@item.Id">Edit</a>
+                    </button>
+                    <button onclick="setTimeout(deleteC(@item.Id), 50)" id="deleteCourse" class="btn btn-danger">Delete</button>
+                </div>
+            </li>
+        }
+    </ul>
+
+    @section scripts
+    {
+        <script>
+            function deleteC(item) {
+                var courseId = item;
+                var url = "/Course/Delete?id=" + courseId;
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    success: function() {
+                        alert("Deleted");
+                        location.reload();
+                    },
+                    error: function(dat) {
+                        alert(dat.x);
+                    }
+                });
+            }
+
+            document.getElementById("deleteCourse").addEventListener("click", deleteC);
+        </script>
+    }
+
+</div>

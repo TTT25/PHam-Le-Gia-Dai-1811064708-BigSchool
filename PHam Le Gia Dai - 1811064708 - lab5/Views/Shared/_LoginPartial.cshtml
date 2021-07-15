@@ -1,0 +1,38 @@
+﻿@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new {id = "logoutForm", @class = "navbar-right"}))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    @Context.Request.Cookies["Username"].Value
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="@Url.Action("Mine", "Course")">My up coming courses</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Attending", "Course")">Course I am going</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("LectureIamGoing", "Course")">Lecturer I am going</a>
+                    </li>
+                    <li class="divider" role="separator"></li>
+                    <li>
+                        <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", null, new {id = "registerLink"})</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", null, new {id = "loginLink"})</li>
+    </ul>
+}

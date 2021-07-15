@@ -1,0 +1,43 @@
+﻿@model IEnumerable<PHam_Le_Gia_Dai___1811064708___lab5.Models.Course>
+
+@{
+    ViewBag.Title = "Attending";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Attending</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<div class="row">
+    <ul class="course">
+        @foreach (var item in Model)
+        {
+            <li>
+                <div class="date">
+                    <div class="month">
+                        @item.DateTime.ToString("MM")
+                    </div>
+                    <div class="day">
+                        @item.DateTime.ToString("dd")
+                    </div>
+                </div>
+                <div class="details">
+                    <span class="lecture">
+                        Name : @item.Name
+                    </span>
+                    <br/>
+                    <span class="lecture">
+                        @item.ApplicationUser.Name
+                    </span>
+                    <br/>
+                    <span class="category">
+                        @item.Category.Name
+                    </span>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
